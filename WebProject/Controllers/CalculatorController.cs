@@ -20,7 +20,19 @@ namespace WebProject.Controllers
         //It creates a calculator object to perform the math operation specified and returns the result in a string
         public JsonResult Calculate(string firstNumber, string secondNumber, string mathOperation)
         {
-            return Json((new Calculator(firstNumber, secondNumber, mathOperation)).result, JsonRequestBehavior.AllowGet);
+            double firstValue, secondValue;
+
+            try //if the numbers are not valid, return an empty string
+            {
+                firstValue = Convert.ToDouble(firstNumber);
+                secondValue = Convert.ToDouble(secondNumber);
+            }
+            catch (FormatException e)
+            {
+                return Json(" ", JsonRequestBehavior.AllowGet);
+            }
+
+            return Json((new Calculator(firstValue, secondValue, mathOperation)).result, JsonRequestBehavior.AllowGet);
         }
     }
 }

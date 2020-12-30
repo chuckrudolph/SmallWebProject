@@ -6,6 +6,8 @@ using System.Data;
 using System.Data.SqlClient;
 using Newtonsoft.Json;
 using System.Web.Mvc;
+using WebProject.Hubs;
+using System.Configuration;
 
 namespace WebProject.Models
 {
@@ -21,30 +23,21 @@ namespace WebProject.Models
         public string getPersonList()
         {
             List<Person> personList = new List<Person>();
-            string getPersonTableQuery = "SELECT * FROM Person";
-
+            string getPersonTableQuery = "SELECT ID, FirstName, LastName FROM dbo.[Person]";
             SqlConnection connection = new SqlConnection(connectionString);
             SqlCommand command = new SqlCommand(getPersonTableQuery, connection);
+            SqlDataReader reader;
 
+            command.Notification = null;
             connection.Open();
 
-            //SqlDataReader reader = command.ExecuteReader();
+            //If a value from the Person table changes, it will fire the dependencyOnChange method to signal the viewer to reload the data
+            //SqlDependency dependency = new SqlDependency(command);
+            //dependency.OnChange += new OnChangeEventHandler(dependencyOnChange);
+            //if (connection.State == ConnectionState.Closed)
+            //    connection.Open();
 
-            SqlDataReader reader;
-            try
-            {
-                reader = command.ExecuteReader();
-            }
-            catch (SqlException exception)
-            {
-                connection.Close();
-                return $"Sql Exeption, Error: {exception.Message}";
-            }
-            catch(Exception exception)
-            {
-                connection.Close();
-                return $"Exeption, Error: {exception.Message}";
-            }
+            reader = command.ExecuteReader();
 
             while (reader.Read()) //Reads a row from a table, creates a person object with the information and adds it into the person list
             {
@@ -56,38 +49,30 @@ namespace WebProject.Models
             return JsonConvert.SerializeObject(personList);
         }
 
-
         //Updates the Person table from the people database. 
-        public string changePersonData(Person changedPerson)
+        public void changePersonData(Person changedPerson)
         {
-            SqlConnection connection = new SqlConnection(connectionString);
             SqlCommand command;
-
+            
+            SqlConnection connection = new SqlConnection(connectionString);
             connection.Open();
 
             command = new SqlCommand("UPDATE Person SET FirstName = @FirstName, LastName = @LastName WHERE ID = @ID", connection);
             command.Parameters.AddWithValue("FirstName", changedPerson.firstName);
             command.Parameters.AddWithValue("LastName", changedPerson.lastName);
             command.Parameters.AddWithValue("ID", changedPerson.id);
-
-            try
-            {
-                command.ExecuteNonQuery();
-            }
-            catch (SqlException exception)
-            {
-                connection.Close();
-                return $"SqlExeption: {exception.Message}";
-            }
-            catch (Exception exception)
-            {
-                connection.Close();
-                return $"Exception: {exception.Message}";
-            }
-
+            command.ExecuteNonQuery();
+            
             connection.Close();
+        }
 
-            return "true";
+        private void dependencyOnChange(object sender, SqlNotificationEventArgs e)
+        {
+            if (e.Type == SqlNotificationType.Change)
+            {
+                TableHub hub = new TableHub();
+                hub.updateAvailable();
+            }
         }
     }
 }

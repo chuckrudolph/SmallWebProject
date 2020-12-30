@@ -45,6 +45,7 @@ function AppViewModel() {
         $.ajax({
             type: "POST",
             url: "/Calculator/Calculate",
+            timeout: 6000,
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify({
                 'firstNumber': self.firstValue(),
@@ -57,7 +58,7 @@ function AppViewModel() {
                 self.resultValue(data);         //set result value
             },
             error: function () {
-                alert("Failed at math operaton");
+                alert("Failed at math operation");
             }
         });
     }
@@ -66,35 +67,6 @@ function AppViewModel() {
     self.firstValue.subscribe(self.getSolution);
     self.secondValue.subscribe(self.getSolution);
     self.dropdownMenu.subscribe(self.getSolution);
-
-    //when a value changes from the dropdown menu or text box, this function wil fire
-    //ko.computed(function () {
-    //    console.log(Date.now().toString() + " running ajax");
-
-    //    //clear existing
-    //    self.resultValue(self.dummyValue());
-
-    //    //It calls the Calculate method from the calculator controller and sends the two values and math symbol
-    //    //to perform the required calculation. If successful, the result will be displayed in the result text box
-    //    $.ajax({
-    //        type: "POST",
-    //        url: "/Calculator/Calculate",
-    //        contentType: "application/json; charset=utf-8",
-    //        data: JSON.stringify({
-    //            'firstNumber': this.firstValue(),
-    //            'secondNumber': this.secondValue(),
-    //            'mathOperation': this.symbol()
-    //        }),
-    //        dataType: "json",
-    //        success: function (data) {
-    //            //$("#result").val(data);
-    //            self.resultValue(data);         //set result value
-    //        },
-    //        error: function () {
-    //            alert("Failed at math operaton");
-    //        }
-    //    });
-    //}, this);
 }
 
 

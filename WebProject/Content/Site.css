@@ -87,3 +87,10 @@ table {
     position: relative;
     padding: 10px;
 }
+
+#confirmationMsg {
+    color: #00bf16;
+    text-align: center;
+    margin: 0;
+    font-size: 1em;
+}

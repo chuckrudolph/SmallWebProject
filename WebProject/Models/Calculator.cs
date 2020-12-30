@@ -9,35 +9,21 @@ namespace WebProject.Models
     {
         public string result { get; }
 
-        public Calculator(string firstNumber, string secondNumber, string symbol)
+        public Calculator(double firstNumber, double secondNumber, string symbol)
         {
-            double firstValue, secondValue;
-         
-            try //if the numbers are not valid, return an empty string
-            {
-                firstValue = Convert.ToDouble(firstNumber);
-                secondValue = Convert.ToDouble(secondNumber);
-            }
-            catch(FormatException e)
-            {
-                result = " ";
-                return;
-            }
-
-
             switch(symbol)
             {
                 case "+":
-                    result = $"{firstValue + secondValue}";
+                    result = $"{firstNumber + secondNumber}";
                     break;
                 case "-":
-                    result = $"{firstValue - secondValue}";
+                    result = $"{firstNumber - secondNumber}";
                     break;
                 case "*":
-                    result = $"{firstValue * secondValue}";
+                    result = $"{firstNumber * secondNumber}";
                     break;
                 case "/":
-                    result = $"{firstValue / secondValue}";
+                    result = $"{firstNumber / secondNumber}";
                     break;
                 default: result = " ";
                     break;

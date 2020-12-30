@@ -6,8 +6,9 @@
 <h1>Database</h1>
 
 <table>
-    <thead> <!-- Adding the titles for the table -->
-        <tr> 
+    <thead>
+        <!-- Adding the titles for the table -->
+        <tr>
             <th>ID</th>
             <th>First Name</th>
             <th>Last Name</th>
@@ -24,7 +25,10 @@
     </tbody>
 </table>
 
+<p id="confirmationMsg"></p>
 
 @section scripts {
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/js"></script>
     <script src="~/Scripts/database.js"></script>
 }
